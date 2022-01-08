@@ -1,37 +1,102 @@
 #include <iostream>
-#include <vector>
+
 #include <algorithm>
-#include <cstring>
+
+#include <cstring> //memset
+
 using namespace std;
-int N, K;
-int p[50001];
-int dp[50001][3]; 
 
-int dfs(int idx, int cnt) {
-	
-	if (idx >= N || cnt == 3) return 0;
-	if (dp[idx][cnt] != -1) return dp[idx][cnt];
+ 
 
-	dp[idx][cnt] = 0;
-	if (idx + K - 1 <= N)
-		dp[idx][cnt] = max(dfs(idx + 1, cnt), dfs(idx + K, cnt + 1) + p[idx + K - 1] - p[idx - 1]);
+const int MAX = 50000 + 1;
 
-	return dp[idx][cnt];
-}
+ 
 
-int main()
+int passengerCarNum;
+
+int passengerCar[MAX];
+
+int maxCarry;
+
+int cache[3][MAX]; //몇번째 소형 기차, 현재 객차 번호
+
+ 
+
+int maxPassenger(int trainNum, int idx)
+
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(0);
 
-	cin >> N;
-	for (int tmp, i = 1; i <= N; i++) {
-		cin >> tmp;
-		p[i] = p[i - 1] + tmp;
-	}
-		
-	cin >> K;
+        //기저 사례 : 소형기차는 0, 1, 2 이렇게 세개이다
 
-	memset(dp, -1, sizeof(dp));
-	cout << dfs(1, 0);
+        //기저 사례 : 객차 칸 수를 벗어날 경우
+
+        if (trainNum == 3 || idx >= passengerCarNum)
+
+                 return 0;
+
+ 
+
+        int &result = cache[trainNum][idx];
+
+        if (result != -1)
+
+                 return result;
+
+ 
+
+        result = 0;
+
+        //해당 객차를 끌고 가지 않을 경우
+
+        //해당 객차를 끌고 갈 경우
+
+        if(idx + maxCarry - 1 <= passengerCarNum) //인덱스 범위를 초과해서 런타임에러 뜨는 것 같다
+
+                 result = max(maxPassenger(trainNum, idx + 1), (passengerCar[idx + maxCarry - 1] - passengerCar[idx - 1]) + maxPassenger(trainNum + 1, idx + maxCarry));
+
+        return result;
+
 }
+
+ 
+
+int main(void)
+
+{
+
+        cin >> passengerCarNum;
+
+       
+
+        for (int i = 1; i <= passengerCarNum; i++)
+
+        {
+
+                 int temp;
+
+                 cin >> temp;
+
+                 //나중에 구간 내 승객 수 세기 쉽게
+
+                 passengerCar[i] = passengerCar[i - 1] + temp;
+
+        }
+
+ 
+
+        cin >> maxCarry;
+
+ 
+
+        memset(cache, -1, sizeof(cache));
+
+ 
+
+        cout << maxPassenger(0, 1) << endl;
+
+ 
+
+        return 0;
+
+}
+
