@@ -1,47 +1,29 @@
-#include <bits/stdc++.h>
-  
+#include <iostream>
 using namespace std;
- 
 int n, m;
-int seq[101];
-int prefix[101];
-int dp[101][52];
- 
-int memo(int idx, int cnt);
- 
-int main() 
-{
-    fill(&dp[0][0], &dp[0][0] + 101 * 52, -1e9);
-    cin.tie(0); ios::sync_with_stdio(false);
- 
-    cin >> n >> m;
- 
-    for (int i = 1; i <= n; ++i)
-        cin >> seq[i];
- 
-    for (int j = 1; j <= n; ++j)
-        prefix[j] = prefix[j - 1] + seq[j];
- 
-    cout << memo(n, m);
-}
- 
-int memo(int idx, int cnt)
-{
-    if (!cnt)
-        return 0;
-    
-    if (idx < 0 || cnt * 2 - 1 > idx)
-        return -1e9;
-    
-    int &ret = dp[idx][cnt];
- 
-    if (ret != -1e9)
-        return ret;
-    
-    ret = memo(idx - 1, cnt);
- 
-    for (int i = idx; i > 0; --i)
-        ret = max(ret, memo(i - 2, cnt - 1) + prefix[idx] - prefix[i - 1]);
- 
-    return ret;
+bool visit[102][52];
+int dp[102][52];
+int sum[102]; 
+int areaSum(int num, int area) {
+    if(area == 0) return 0;
+    if(num < 2*area-1) return -987654321; 
+    if(visit[num][area]) return dp[num][area];
+    visit[num][area] = true;
+    dp[num][area] = areaSum(num-1, area);
+    for(int i = num; i >= 1; i--) {
+        dp[num][area] = max(dp[num][area], sum[num] - sum[i-1] + areaSum(i-2, area-1)); 
+    } 
+    return dp[num][area]; 
+    }
+int main() { 
+    ios_base :: sync_with_stdio(false);
+    cin.tie(NULL); 
+    cout.tie(NULL); cin >> n >> m;
+    int seq; 
+    for(int i = 1; i <= n; i++){ 
+        cin >> seq;
+        sum[i] = sum[i-1] + seq;
+    }
+    cout << areaSum(n, m); 
+    return 0;
 }
