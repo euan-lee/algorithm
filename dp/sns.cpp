@@ -1,127 +1,34 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <cstring> //memset;
+#include <bits/stdc++.h>
 using namespace std;
-const int MAX = 1000000 + 1;
 
-int N;
-vector<int> friends[MAX]; //처음 입력하는 친구 관계
-vector<int> dirNode[MAX]; //단방향 그래프 저장
-bool visited[MAX];
-int cache[MAX][2]; //노드, earlyAdaptor?
+int n,parent;
+vector<int> e[1000001];
+int dp[1000001][2]; //0이 어답터, 1이 일반인
+bool visited[1000001];
 
-//단방향 그래프로 바꾼다
-
-void DFS(int nodeNum)
-{
-        visited[nodeNum] = true;
-
-        for (int i = 0; i < friends[nodeNum].size(); i++)
-        {
-                 int next = friends[nodeNum][i];
-                 if (!visited[next])
-                 {
-                         dirNode[nodeNum].push_back(next);
-                         DFS(next);
-                 }
-        }
-}
-
- 
-
-int getEarlyAdaptor(int nodeNum, bool early)
-{
-
-        int &result = cache[nodeNum][early];
-        if (result != -1)
-                 return result;
-        //본인이 얼리어댑터이면 자식은 어떻든 상관없다
-
-        if (early)
-
-        {
-
-                 result = 1; //얼리어댑터이므로
-
-                 for (int i = 0; i < dirNode[nodeNum].size(); i++)
-
-                 {
-
-                         int next = dirNode[nodeNum][i];
-
-                         result += min(getEarlyAdaptor(next, true), getEarlyAdaptor(next, false));
-
-                 }
-
-        }
-
-        //본인이 얼리어댑터가 아니면 자식은 무조건 얼리어댑터여야한다
-
-        else
-
-        {
-
-                 result = 0; //얼리어댑터가 아니므로
-
-                 for (int i = 0; i < dirNode[nodeNum].size(); i++)
-
-                 {
-
-                         int next = dirNode[nodeNum][i];
-
-                         result += getEarlyAdaptor(next, true);
-
-                 }
-
-        }
-
-        return result;
+void find(int x){
+    visited[x]=true;
+    dp[x][0]=1;
+    for(int i=0; i<e[x].size(); i++){
+        int child = e[x][i];
+        if(visited[child]) continue;
+        find(child);
+        dp[x][1]+=dp[child][0];
+        dp[x][0]+=min(dp[child][1],dp[child][0]);
+    }
 
 }
-
- 
-
-int main(void)
-
-{
-
-        cin >> N;
-
- 
-
-        for (int i = 0; i < N - 1; i++)
-
-        {
-
-                 int node1, node2;
-
-                 cin >> node1 >> node2;
-
- 
-
-                 friends[node1].push_back(node2);
-
-                 friends[node2].push_back(node1);
-
-        }
-
- 
-
-        memset(cache, -1, sizeof(cache));
-
- 
-
-        DFS(1); //1이 루트
-
- 
-
-        //루트가 얼리어댑터일 수도 아닐 수도 있으므로
-
-        cout << min(getEarlyAdaptor(1, false), getEarlyAdaptor(1, true)) << endl;
-
-        return 0;
-
+int main(void){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cin>>n;
+    int u,v;
+    for(int i=0; i<n-1; i++){
+        cin>>u>>v;
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+    find(1);
+    cout<<min(dp[1][0],dp[1][1]);
 }
-
 
