@@ -68,6 +68,5 @@ int main(void)
  
     //freopen("Input.txt", "r", stdin);
     Solve();
- 
     return 0;
 }
