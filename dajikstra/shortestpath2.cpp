@@ -51,8 +51,9 @@ void Solution()
     {
         if (Dist[i] == INF) cout << "INF" << endl;
         else cout << Dist[i] << endl;
-    }
-}
+    } 
+
+} 
  
 void Solve()
 {
