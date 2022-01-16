@@ -31,3 +31,14 @@ int fibo(int n)
 
 ```
 
+
+iteration과 recursion의 차이
+
+recursion 방식:
+1.recursive function 사용
+2.top-bottom 방식
+
+iterative 방식:
+1.for문을 사용
+2.bottom-up 방식
+
