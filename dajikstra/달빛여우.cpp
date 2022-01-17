@@ -6,7 +6,6 @@
 using namespace std;
  
 int n, m;
- 
 int Fdist[4001];
 int Wdist[2][4001]; // 걸어서 또는 뛰어서 노드 v에도 도착한 최단 시간  
  
