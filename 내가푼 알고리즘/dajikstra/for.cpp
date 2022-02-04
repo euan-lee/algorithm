@@ -43,5 +43,3 @@ void Dijkstra()
     }
 }
 
-
-출처: https://yabmoons.tistory.com/364 [얍문's Coding World..]
