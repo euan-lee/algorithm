@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int node,query,s,e,root;
+vector<int> v[100001];
+int dp[100000]={0,};
+bool visited[100000]={ false, };
+int result=0;
+ int next_node;
+
+int dfs(int start){
+     printf("start is %d size is %d\n",start,v[start].size());
+    if(!(dp[start]==0)) return dp[start];//dp에 저장되어 있으면 유효값 리턴
+    visited[start]=1;
+    dp[start]=1;
+    for(int i=0;i<v[start].size();i++){
+         next_node=v[start][i];
+        if(visited[next_node]==0){//만약 방문하지 않았다면 
+         dp[start]=dp[start]+dfs(next_node);
+        }
+     }
+     return dp[start];
+}
+
+
+
+
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> node >> root >> query;
+	for (int i = 0; i < node - 1; i++) {
+		cin >> s >> e;
+		v[s].push_back(e);
+        v[e].push_back(s);
+	}
+   
+    dp[root]=dfs(5);
+
+
+	for (int i = 0; i <query; i++) {
+		cin >> s;
+		cout << dp[s] << '\n';
+	}
+}
+/*9 5 3
+1 3
+4 3
+5 4
+5 6
+6 7
+2 3
+9 6
+6 8
+5
+4
+8
+*/
