@@ -28,4 +28,5 @@ int main()
 
 	cout << DP[N][K];
 
+	
 }
