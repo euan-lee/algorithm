@@ -19,4 +19,5 @@ int main() {
   scanf("%d", &N); 
   algo(0);
   return 0;
+  
 }
