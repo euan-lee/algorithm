@@ -2,48 +2,55 @@
 #include <vector>
 using namespace std;
 
+vector<vector<int>> v_map;
 bool visited[11][11];
-int arr[11][11];
 int n, m, k;
-int ans =  -40000;
+int dx[4] = { 0,0,-1,1 };
+int dy[4] = { 1,-1,0,0 };
+int max_val = -99999999;
 
-int dx[4] = {0, 0, 1, -1};
-int dy[4] = {1, -1, 0, 0};
-
-void backtrack(int px, int py, int cnt, int sum){
-	if(cnt == k){ //재귀 종료 조건
-		ans = max(ans, sum);
-		return;
+void input() {
+	cin >> n >> m >> k;
+	v_map.resize(n, vector<int>(m));
+	for (int i = 0;i < n;++i) {
+		for (int j = 0;j < m;++j) {
+			cin >> v_map[i][j];
+		}
 	}
-	for(int x=px; x<n; x++){
-		for(int y=(x == px ? py : 0); y<m; y++){
-			if(!visited[x][y]){
-				bool flag = true;
-				for(int i=0; i<4; i++){ //인접 여부 판단
-					int nx = x + dx[i];
-					int ny = y + dy[i];
-					if(0 <= nx && nx < n && 0 <= ny && ny < m){ //범위 내에 존재 -> 선택 가능한 경우
-						if(visited[nx][ny])	flag = false; //이미 방문한 칸이면 선택 불가
-					}
-				}
-				if(flag){
-					visited[x][y] = true;
-					backtrack(x, y, cnt + 1, sum + arr[x][y]);
-					visited[x][y] = false;
-				}
+}
+bool no_injub(int x, int y) {
+	for (int i = 0;i < 4;++i) {
+		int nx = x + dx[i];
+		int ny = y + dy[i];
+		if (nx >= 0 && nx < n && ny >= 0 && ny < m) {
+			if (visited[nx][ny] == true) {
+				return false;
 			}
 		}
 	}
+	return true;
+}
+void sol(int sum, int cnt) {
+	if (cnt == k) {
+		if (max_val < sum) {
+			max_val = sum;
+		}
+		return;
+	}
 
+	for (int i = 0;i < n;++i) {
+		for (int j = 0;j < m;++j) {
+			if (visited[i][j] == false && no_injub(i, j) == true) {
+				visited[i][j] = true;
+				sol(sum + v_map[i][j], cnt + 1);
+				visited[i][j] = false;
+			}
+		}
+	}
 }
 
-int main(){
-	cin>>n>>m>>k;
-	for(int i=0; i<n; i++){
-		for(int j=0; j<m; j++)
-			cin>>arr[i][j];
-	}
-	backtrack(0, 0, 0, 0);
-	cout<<ans<<'\n';
-	return 0;
+int main() {
+	input();
+	sol(0, 0);
+	cout << max_val;
 }
