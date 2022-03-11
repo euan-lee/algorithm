@@ -1,58 +1,44 @@
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <algorithm>
-#include <vector>
-#include <math.h>
-#include <queue>
-#include <set>
-#include <list>
-#include <utility>
-#include <functional>
-#define MAX 1005
-#define INF 987654321
-#define MOD 1000000
-#pragma warning(disable:4996)
+#include <bits/stdc++.h>
+ 
+#define INF 0x3f3f3f3f3f3f3f3fLL
+#define ft first
+#define sd second
 using namespace std;
-typedef long long ll;
-typedef pair<int, int> pi;
-
-int n, x, y, a, b;
-ll from[5], to[5];
-int dy[5] = { 0,1,0,-1,0 }, dx[5] = {0,0,1,0,-1};
-
-int main()
-{
-	scanf("%d%d%d", &n, &x, &y);
-
-	for (int i = 0; i < n; i++)
-	{
-		scanf("%d%d", &a, &b);
-		//printf("<%d %d %d %d>\n", x, y, a, b);
-		for (int p = 0; p < 5; p++)
-		{
-			for (int q = 0; q < 5; q++)
-			{
-				//printf("-1");
-				int tmp= abs((y + dy[p]) - (b + dy[q])) + abs((x + dx[p]) - (a + dx[q]));
-				//printf("-2");
-				if (p == 0)
-				{
-					to[q] = tmp+from[p];
-					continue;
-				}
-				if (to[q] > tmp+from[p])
-					to[q] = tmp+from[p];
-			}
-			if (i == 0)
-				break;
-		}
-		swap(from, to);
-		x = a, y = b;
-	}
-	ll ans = from[0];
-	for (int i = 1; i < 5; i++)
-		ans = min(ans, from[i]);
-	printf("%lld", ans);
-	return 0;
+using ll = long long;
+using pll = pair<ll, ll>;
+ 
+int n;
+ll d[111'111][5];
+pll p[111'111];
+int dx[] = {0, 0, 1, 0, -1}, dy[] = {0, 1, 0, -1, 0};
+ 
+ll getDist(ll x1, ll y1, ll x2, ll y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+ 
+ll go(int i, int j, int x, int y) {
+    if (i == n) return 0;
+    ll &ret = d[i][j];
+    if (ret != -1) return ret;
+    ret = INF;
+    for (int k = 0; k < 5; k++) {
+        ll nx = p[i + 1].ft + dx[k];
+        ll ny = p[i + 1].sd + dy[k];
+        ret = min(ret, go(i + 1, k, nx, ny) + getDist(x, y, nx, ny));
+    }
+ 
+    return ret;
+}
+ 
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+ 
+    cin >> n;
+    memset(d, -1, sizeof(d));
+    cin >> p[0].ft >> p[0].sd;
+    for (int i = 1; i < n + 1; i++) {
+        cin >> p[i].ft >> p[i].sd;
+    }
+    cout << go(0, 0, p[0].ft, p[0].sd);
 }
