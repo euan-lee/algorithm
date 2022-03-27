@@ -7,6 +7,7 @@ int inorder[100001];
 int postorder[100001];
 int n;
 
+
 // 입력 받기
 void input()
 {
