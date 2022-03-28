@@ -73,5 +73,3 @@ int main(void)
 }
 
 
-
-출처: https://jaimemin.tistory.com/727 [꾸준함]
