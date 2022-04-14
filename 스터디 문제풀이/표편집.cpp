@@ -85,6 +85,3 @@ string solution(int n, int k, vector<string> cmd) {
 
     return answer;
 }
-© 2022 GitHub, Inc.
-Terms
-Priva
