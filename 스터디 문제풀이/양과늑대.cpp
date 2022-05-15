@@ -1,43 +1,63 @@
-#include <string>
+
 #include <vector>
+#include <queue>
 #include <algorithm>
+
 using namespace std;
 
-int answer = 1;
-int s = 0;
-int w = 0;
+struct Node {
+    int sheep; // 모은 양의 수
+    int wolf; // 모은 늑대의 수
+    int route; // 현재까지 방문한 노드들
 
-void dfs(int curr_idx, int w, int s, vector<int> nextNode, vector<int> info, vector<vector<int>> v) {
-    int animal = info[curr_idx];
-    if(!animal) s++;
-    else w++;
-    
-    answer = max(answer, s);
-    
-    if(w >= s) return;
-    
-    for(int i = 0; i < nextNode.size(); i++) {
-        vector<int> next = nextNode;
-        next.erase(next.begin()+i);
-        for(int j = 0; j < v[nextNode[i]].size(); j++) 
-            next.push_back(v[nextNode[i]][j]);
-        dfs(nextNode[i],w,s, next, info, v);
-    }
-}
+    Node(int _sheep, int _wolf, int _route) : sheep(_sheep), wolf(_wolf), route(_route) {}
+};
 
+bool visit[132000];
 
 int solution(vector<int> info, vector<vector<int>> edges) {
-   vector<vector<int>> v(info.size());
+    int S = info.size();
+    vector<vector<int>> g(S);
+    for(auto edge: edges) {
+        g[edge[0]].push_back(edge[1]);
+    }
 
-    for(int i = 0; i < edges.size(); i++) 
-        v[edges[i][0]].push_back(edges[i][1]);
+    queue<Node*> q;
     
-    vector<int> nextNode; //0번 노드와 연결된 값부터 시작하기 위해서
-    for(int i = 0; i < v[0].size(); i++)
-        nextNode.push_back(v[0][i]);
-    
-    dfs(0,0,0,nextNode, info, v);
-    
-    
+    q.push(new Node(1, 0, (1 << 0))); // 루트 노드
+    visit[(1<<0)] = true;
+    int answer = 1;
+
+    while(!q.empty()) {
+        Node *cur = q.front(); q.pop();
+
+        int sheep = cur->sheep;
+        int wolf = cur->wolf;
+        int route = cur->route;
+
+        for(int i=0; i<S; ++i) {
+            if(route & (1 << i)) { // 현재까지 방문한 노드에서
+                for(auto next: g[i]) { // 다음으로 이동할 노드
+               	    int next_route = route | (1 << next);
+                    if(info[next] == 0) { // 양
+                        if(visit[next_route]) continue; // 만약 똑같이 방문한적이 있다면 pass
+
+                        answer = max(answer, sheep+1);
+                        visit[next_route] = true;
+                        q.push(new Node(sheep+1, wolf, next_route));
+                    }
+                    else { // 늑대
+                        if(sheep > wolf+1) {
+                            if(visit[next_route]) continue;
+
+                            visit[next_route] = true;
+                            q.push(new Node(sheep, wolf+1, next_route));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     return answer;
 }
