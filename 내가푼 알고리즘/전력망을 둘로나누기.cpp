@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 vector<int>graph[101];
-int visited[10];
+int visited[101];
 int answer;
 
 void  Dfs(int root){
@@ -25,8 +25,8 @@ void  Dfs(int root){
 int solution(int n, vector<vector<int>> wires) {
     int total_size=0;
     int temp_root=0;
-    int minimun=10;
-    visited[10]={0,};
+    int minimun=1000;
+    visited[101]={0,};
     answer=0;
     for(int i=0;i<wires.size();i++){
         graph[wires[i][0]].push_back(wires[i][1]);
