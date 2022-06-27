@@ -2,43 +2,50 @@
 #include <vector>
 #include <map>
 using namespace std;
-int arr[10000];
+int arr[6000];
 
 void Outside(int original_size,int triangle_size,int start,int start_value,int depth){
     if(triangle_size<=0){
         return;
     }
     arr[start]=start_value;
+   // printf("i:%d %d ",start_value,arr[start]);
     for(int i=start+1;i<start+1+triangle_size-1;i++){
         arr[i]=arr[i-1]+(1+2*(depth-1))+i-(start+1);
+      //   printf("i:%d %d ",i+1,arr[i]);
     }
-
+   // printf("\n");
     for(int i=start+1+triangle_size-1;i<start+1+2*(triangle_size-1);i++){
         arr[i]=arr[i-1]+1;
+      //   printf("i:%d %d ",i+1,arr[i]);
     }
-    
+  //  printf("\n");
     for(int i=start+1+2*(triangle_size-1);i<start+3*(triangle_size-1);i++){
         arr[i]=arr[i-1]-((original_size-depth+1)-(i-(start+1+2*(triangle_size-1))));
+       // printf("i:%d %d ",i+1,arr[i]);
     }
+   // printf("\n");
     Outside(original_size,triangle_size-3,start+3*(triangle_size-1),start_value+4,depth+1);
 }
 vector<int> solution(int n){ 
-    //n=10;
     vector<int> answer;
     map<int,int> m;
-    arr[10000]={0,};
+    arr[6000]={0,};
+    n=30;
     Outside(n,n,0,1,1);
-    for(int i=0;i<10000;i++){
+    
+    for(int i=0;i<6000;i++){
         if(arr[i]==0){
-            break;
+           break ;
         }
-         printf("%d ",arr[i]);
+      //  printf("i:%d %d ",i+1,arr[i]);
         m.insert({arr[i],i+1});
     }
-    for(int i=1;i<=m.size();i++){
+    for(int i=0;i<m.size();i++){
+        if(m[i]==0)continue;
         answer.push_back(m[i]);
+        printf("%d ",m[i]);
     }
-    
     return answer;
 }
 
