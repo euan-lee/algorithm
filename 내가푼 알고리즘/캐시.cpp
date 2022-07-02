@@ -1,32 +1,39 @@
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <list>
+#include <algorithm>
+
 using namespace std;
 
 int solution(int cacheSize, vector<string> cities) {
-    unordered_map<string,int> table;
-     int answer = 0;
-    for(int i=1;i<=cities.size();i++){
-        string city_name=cities[i-1];
-        for(int i=0;i<city_name.size();i++){
-            city_name[i]=tolower(city_name[i]);
-        }
-        if(table.find(city_name)!=table.end()){
-            if((i-table[city_name])>cacheSize){
-                answer=answer+5;
-                table.erase(city_name);
-                table.insert({city_name,i});
+    int answer = 0;
+    
+    for(int i = 0; i < cities.size(); i++)
+        for(int j = 0; j < cities[i].length(); j++)
+            cities[i][j] = tolower(cities[i][j]);
+
+    list<string> cache;
+    for (int i = 0; i < cities.size(); i++)
+    {
+        list<string>::iterator itr = find(cache.begin(), cache.end(), cities[i]);
+        if (itr == cache.end())
+        {
+            answer += 5;
+            if (cache.size() < cacheSize)
+                cache.push_back(cities[i]);
+            else if (cache.size() == cacheSize && cacheSize > 0)
+            {
+                cache.erase(cache.begin());
+                cache.push_back(cities[i]);
             }
-            else{
-                answer=answer+1;
-                table.erase(city_name);
-                table.insert({city_name,i});
-            }
         }
-        else{
-            table.insert({city_name,i});
-            answer=answer+5;
+        else
+        {
+            answer += 1;
+            cache.erase(itr);
+            cache.push_back(cities[i]);
         }
-    }   
+    }
+
     return answer;
 }
