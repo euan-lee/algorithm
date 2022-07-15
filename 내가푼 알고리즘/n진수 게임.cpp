@@ -27,5 +27,5 @@ string solution(int n, int t, int m, int p) {
     //튜브 순서 p
     string answer = "";
 
-    return answer;
+    return answer;//
 }
